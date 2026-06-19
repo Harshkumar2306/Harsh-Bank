@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Show, RedirectToSignIn, UserButton } from "@clerk/nextjs";
+import { Show, RedirectToSignIn, UserButton, SignInButton } from "@clerk/nextjs";
 import { Wallet, ArrowRightLeft, ShieldCheck, Activity, Globe, Zap, ArrowUpRight, ArrowDownRight, CreditCard, Send, Plus } from "lucide-react";
 import { depositFunds, transferFundsOnline } from "@/lib/actions";
 import { motion } from "framer-motion";
