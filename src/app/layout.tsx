@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs';
+import { dark } from '@clerk/themes';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -26,6 +27,8 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
+        // @ts-expect-error - Clerk types are mismatched with @clerk/themes in this version
+        baseTheme: dark,
         variables: {
           colorPrimary: '#10b981',
           colorBackground: '#020817',
