@@ -31,7 +31,6 @@ export default function RootLayout({
         variables: {
           colorPrimary: '#10b981',
           colorBackground: '#020817',
-          colorInputText: '#fff',
         },
         elements: {
           card: "bg-[#020817]/90 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-[2rem]",
