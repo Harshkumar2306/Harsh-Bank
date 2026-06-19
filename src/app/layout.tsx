@@ -27,24 +27,28 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
-        // @ts-expect-error - Clerk types are mismatched with @clerk/themes in this version
-        baseTheme: dark,
         variables: {
           colorPrimary: '#10b981',
-          colorBackground: '#020817',
+          colorBackground: '#0f172a',
+          colorText: 'white',
+          colorDanger: '#ef4444',
+          colorSuccess: '#22c55e',
         },
         elements: {
-          card: "bg-[#020817]/90 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-[2rem]",
-          headerTitle: "text-white font-black text-2xl tracking-tighter",
-          headerSubtitle: "text-gray-400",
-          socialButtonsBlockButton: "bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-all rounded-xl",
-          dividerLine: "bg-white/10",
-          dividerText: "text-gray-500",
-          formFieldLabel: "text-gray-300 font-semibold",
-          formFieldInput: "bg-black/50 border border-white/10 text-white rounded-xl focus:border-emerald-500 transition-all",
-          formButtonPrimary: "bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all",
-          footerActionText: "text-gray-400",
-          footerActionLink: "text-emerald-400 hover:text-emerald-300 font-bold",
+          card: "bg-slate-900 border border-slate-800 shadow-2xl",
+          headerTitle: "text-white font-bold",
+          headerSubtitle: "text-slate-400",
+          socialButtonsBlockButton: "text-white border border-slate-700 hover:bg-slate-800 transition-all",
+          socialButtonsBlockButtonText: "text-white font-semibold",
+          dividerLine: "bg-slate-700",
+          dividerText: "text-slate-400",
+          formFieldLabel: "text-slate-300",
+          formFieldInput: "bg-slate-800 border-slate-700 text-white focus:ring-emerald-500 focus:border-emerald-500 transition-all",
+          formButtonPrimary: "bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-bold transition-all",
+          footerActionText: "text-slate-400",
+          footerActionLink: "text-emerald-500 hover:text-emerald-400 font-semibold",
+          identityPreviewText: "text-white",
+          formFieldAction: "text-emerald-500 hover:text-emerald-400"
         }
       }}
     >
