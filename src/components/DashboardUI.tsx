@@ -7,21 +7,41 @@ import { depositFunds, transferFundsOnline } from "@/lib/actions";
 import { motion } from "framer-motion";
 import { AreaChart, Area, Tooltip, ResponsiveContainer } from 'recharts';
 
-// Simple mock chart data to simulate growth from genesis to current
-function generateChartData(balance: number) {
-  return [
-    { time: 'T-6', balance: balance * 0.4 },
-    { time: 'T-5', balance: balance * 0.5 },
-    { time: 'T-4', balance: balance * 0.8 },
-    { time: 'T-3', balance: balance * 0.75 },
-    { time: 'T-2', balance: balance * 0.9 },
-    { time: 'T-1', balance: balance * 0.95 },
-    { time: 'Now', balance: balance },
-  ];
+// Generate real chart data based on transaction history
+function generateRealChartData(transactions: any[], currentBalance: number) {
+  if (!transactions || transactions.length === 0) {
+    return [
+      { time: 'Genesis', balance: 0 },
+      { time: 'Now', balance: currentBalance }
+    ];
+  }
+
+  // Transactions are passed in newest first. Reverse to get chronological (oldest first)
+  const chronologicalTxs = [...transactions].reverse();
+  
+  const data: any[] = [];
+  let runningBalance = 0;
+  
+  data.push({ time: 'Start', balance: 0 });
+
+  chronologicalTxs.forEach((tx) => {
+    if (tx.type === 'credit') {
+      runningBalance += tx.amount;
+    } else if (tx.type === 'debit') {
+      runningBalance -= tx.amount;
+    }
+    
+    const date = new Date(tx.timestamp);
+    const timeLabel = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    data.push({ time: timeLabel, balance: runningBalance });
+  });
+
+  return data;
 }
 
 export default function DashboardUI({ walletData, transactions, clerkId, name, email }: { walletData: any, transactions: any[], clerkId?: string, name?: string, email?: string }) {
-  const chartData = generateChartData(walletData?.syncedBalance || 10000);
+  const chartData = generateRealChartData(transactions, walletData?.syncedBalance || 10000);
   const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [isTransferOpen, setIsTransferOpen] = useState(false);
   const [depositAmount, setDepositAmount] = useState("");
