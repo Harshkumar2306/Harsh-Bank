@@ -26,31 +26,31 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider
-      appearance={{
+      appearance={({
         variables: {
           colorPrimary: '#10b981',
-          colorBackground: '#1e293b', // slate-800, brighter background
+          colorBackground: '#1e293b',
           colorText: '#ffffff',
           colorDanger: '#ef4444',
           colorSuccess: '#22c55e',
         },
         elements: {
           card: "bg-slate-800 border border-slate-700 shadow-2xl",
-          headerTitle: "text-white font-black text-2xl",
-          headerSubtitle: "text-slate-200 font-medium",
-          socialButtonsBlockButton: "text-white border border-slate-600 hover:bg-slate-700 transition-all",
-          socialButtonsBlockButtonText: "text-white font-bold",
+          headerTitle: "!text-white font-black text-2xl",
+          headerSubtitle: "!text-slate-200 font-medium",
+          socialButtonsBlockButton: "!text-white border border-slate-600 hover:bg-slate-700 transition-all",
+          socialButtonsBlockButtonText: "!text-white font-bold",
           dividerLine: "bg-slate-600",
-          dividerText: "text-slate-300",
-          formFieldLabel: "text-white font-bold",
-          formFieldInput: "bg-slate-900 border-slate-600 text-white focus:ring-emerald-500 focus:border-emerald-500 transition-all",
-          formButtonPrimary: "bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black transition-all",
-          footerActionText: "text-slate-300",
+          dividerText: "!text-slate-300",
+          formFieldLabel: "!text-white font-bold",
+          formFieldInput: "bg-slate-900 border-slate-600 !text-white focus:ring-emerald-500 focus:border-emerald-500 transition-all",
+          formButtonPrimary: "bg-emerald-500 hover:bg-emerald-400 !text-slate-900 font-black transition-all",
+          footerActionText: "!text-slate-300",
           footerActionLink: "text-emerald-400 hover:text-emerald-300 font-bold",
-          identityPreviewText: "text-white font-bold",
+          identityPreviewText: "!text-white font-bold",
           formFieldAction: "text-emerald-500 hover:text-emerald-400"
         }
-      }}
+      }) as any}
     >
       <html
         lang="en"
