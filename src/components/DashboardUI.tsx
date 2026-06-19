@@ -28,6 +28,7 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
   const [transferAmount, setTransferAmount] = useState("");
   const [transferEmail, setTransferEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedTx, setSelectedTx] = useState<any>(null);
 
   const handleDeposit = async () => {
     if (!depositAmount || isNaN(Number(depositAmount))) return;
@@ -234,6 +235,7 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.1 }}
                       key={tx._id || tx.clientTxId || i} 
+                      onClick={() => setSelectedTx(tx)}
                       className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors cursor-pointer"
                     >
                       <div className="flex items-center gap-3">
@@ -309,6 +311,42 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
                 {loading ? 'Sending...' : 'Send Money'}
               </button>
             </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Transaction Details Modal */}
+      {selectedTx && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#0f172a] border border-white/10 p-8 rounded-[2rem] w-full max-w-md shadow-2xl relative">
+            <button onClick={() => setSelectedTx(null)} className="absolute top-6 right-6 text-gray-500 hover:text-white">✕</button>
+            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg ${selectedTx.type === 'credit' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
+              {selectedTx.type === 'credit' ? <ArrowDownRight className="w-8 h-8" /> : <ArrowUpRight className="w-8 h-8" />}
+            </div>
+            
+            <h3 className="text-2xl font-bold text-white mb-1 text-center">{selectedTx.title}</h3>
+            <p className="text-gray-400 mb-8 text-center text-sm">{new Date(selectedTx.timestamp).toLocaleString()}</p>
+            
+            <div className="space-y-4 bg-black/30 rounded-xl p-5 border border-white/5 mb-8">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-500 text-sm font-medium">Status</span>
+                <span className="text-emerald-400 text-sm font-bold bg-emerald-400/10 px-2 py-1 rounded-md">Completed</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-500 text-sm font-medium">Amount</span>
+                <span className={`font-black text-xl tracking-tight ${selectedTx.type === 'credit' ? 'text-emerald-400' : 'text-white'}`}>
+                  {selectedTx.type === 'credit' ? '+' : '-'} ₹{selectedTx.amount}
+                </span>
+              </div>
+              <div className="flex justify-between items-center border-t border-white/5 pt-4">
+                <span className="text-gray-500 text-sm font-medium">Transaction ID</span>
+                <span className="text-gray-400 text-[10px] font-mono line-clamp-1 break-all">{selectedTx.clientTxId || selectedTx._id}</span>
+              </div>
+            </div>
+            
+            <button onClick={() => setSelectedTx(null)} className="w-full py-4 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold transition-all">
+              Close Details
+            </button>
           </motion.div>
         </div>
       )}
