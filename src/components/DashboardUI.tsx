@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Show, SignInButton, UserButton } from "@clerk/nextjs";
+import { Show, RedirectToSignIn, UserButton } from "@clerk/nextjs";
 import { Wallet, ArrowRightLeft, ShieldCheck, Activity, Globe, Zap, ArrowUpRight, ArrowDownRight, CreditCard, Send, Plus } from "lucide-react";
 import { depositFunds, transferFundsOnline } from "@/lib/actions";
 import { motion } from "framer-motion";
@@ -105,52 +105,9 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
       {/* Main Content Area */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-12 relative z-10">
         
-        {/* === LOGGED OUT VIEW (HERO) === */}
+        {/* === LOGGED OUT VIEW (REDIRECT TO LOGIN) === */}
         <Show when="signed-out">
-          <div className="flex flex-col items-center justify-center min-h-[70vh] text-center max-w-4xl mx-auto">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", bounce: 0.5 }}
-            >
-              <div className="p-4 bg-emerald-500/10 rounded-full border border-emerald-500/20 mb-8 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
-                <Globe className="w-16 h-16 text-emerald-400 animate-pulse" />
-              </div>
-            </motion.div>
-            
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter leading-tight"
-            >
-              The Core <br/>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-200">
-                Ledger.
-              </span>
-            </motion.h1>
-            
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl font-light"
-            >
-              The central nervous system for your offline P2P transactions. Sync, track, and secure your digital wealth globally.
-            </motion.p>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <SignInButton mode="modal">
-                <button className="group relative bg-emerald-500 text-white px-10 py-5 rounded-full text-xl font-bold transition-all transform hover:scale-105 hover:shadow-[0_0_60px_rgba(16,185,129,0.4)] flex items-center gap-3">
-                  Initialize Dashboard <ArrowRightLeft className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" />
-                </button>
-              </SignInButton>
-            </motion.div>
-          </div>
+          <RedirectToSignIn />
         </Show>
 
         {/* === LOGGED IN VIEW (DASHBOARD) === */}
