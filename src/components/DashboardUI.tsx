@@ -91,10 +91,10 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-4 cursor-pointer group"
           >
-            <div className="bg-gradient-to-br from-emerald-500 to-teal-400 p-2.5 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center group-hover:scale-105 transition-transform">
-              <Wallet className="w-7 h-7 text-white" strokeWidth={2.5} />
+            <div className="bg-gradient-to-br from-emerald-500 to-teal-400 p-2 sm:p-2.5 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] flex items-center justify-center group-hover:scale-105 transition-transform">
+              <Wallet className="w-5 h-5 sm:w-7 sm:h-7 text-white" strokeWidth={2.5} />
             </div>
-            <h1 className="text-3xl font-black tracking-tighter text-white whitespace-nowrap">
+            <h1 className="text-xl sm:text-3xl font-black tracking-tighter text-white whitespace-nowrap">
               Harsh<span className="text-emerald-400">Bank</span>
             </h1>
           </motion.div>
@@ -110,10 +110,11 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
               <div className="flex items-center gap-4">
                 <a 
                   href={`https://github.com/Harshkumar2306/Harsh-Pay-App/releases/latest/download/app-release.apk?v=${Date.now()}`}
-                  className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 px-4 py-2 rounded-full font-semibold transition-all shadow-[0_0_10px_rgba(16,185,129,0.1)] hover:shadow-[0_0_15px_rgba(16,185,129,0.2)] whitespace-nowrap text-sm flex items-center gap-2"
+                  className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-semibold transition-all shadow-[0_0_10px_rgba(16,185,129,0.1)] hover:shadow-[0_0_15px_rgba(16,185,129,0.2)] whitespace-nowrap text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2"
                 >
-                  <Download className="w-4 h-4" />
-                  Get Android App
+                  <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Get Android App</span>
+                  <span className="sm:hidden">App</span>
                 </a>
                 <div className="p-0.5 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/10 hover:border-emerald-500/50 transition-colors shadow-lg">
                 <UserButton 
@@ -135,7 +136,7 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-12 relative z-10">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-12 relative z-10">
         
         {/* === LOGGED OUT VIEW (REDIRECT TO LOGIN) === */}
         <Show when="signed-out">
@@ -151,10 +152,10 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
           >
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
               <div>
-                <h2 className="text-4xl font-black text-white tracking-tight mb-2">Central Command</h2>
-                <p className="text-gray-400">Welcome back, <span className="text-white font-semibold">{name || 'Admin'}</span>. Your ledger is fully synchronized.</p>
+                <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-2">Central Command</h2>
+                <p className="text-gray-400 text-sm sm:text-base">Welcome back, <span className="text-white font-semibold">{name || 'Admin'}</span>. Your ledger is fully synchronized.</p>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                 <button 
                   onClick={() => setIsProfileOpen(true)}
                   className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-full border border-white/10 backdrop-blur-md transition-colors text-sm font-semibold flex items-center gap-2 shadow-lg"
@@ -172,20 +173,20 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               
               {/* Box 1: Vault Balance */}
-              <div className="lg:col-span-4 bg-gradient-to-br from-gray-900 to-[#0a101f] border border-white/5 rounded-3xl p-8 relative overflow-hidden shadow-2xl flex flex-col justify-center">
+              <div className="lg:col-span-4 bg-gradient-to-br from-gray-900 to-[#0a101f] border border-white/5 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xl flex flex-col justify-center">
                 <div className="absolute -top-32 -right-32 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full pointer-events-none"></div>
                 <div className="relative z-10">
-                  <p className="text-emerald-400 font-semibold tracking-wider uppercase text-sm mb-3 flex items-center gap-2">
+                  <p className="text-emerald-400 font-semibold tracking-wider uppercase text-xs sm:text-sm mb-2 sm:mb-3 flex items-center gap-2">
                     <ShieldCheck className="w-4 h-4" /> Vault Balance
                   </p>
-                  <h3 className="text-5xl lg:text-6xl font-black text-white tracking-tighter">
+                  <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tighter">
                     ₹ {(walletData?.syncedBalance || 0).toLocaleString()}
                   </h3>
                 </div>
               </div>
 
               {/* Box 2: Quick Actions */}
-              <div className="lg:col-span-4 bg-gray-900/40 border border-white/5 rounded-3xl p-8 flex flex-col justify-center gap-4 shadow-xl">
+              <div className="lg:col-span-4 bg-gray-900/40 border border-white/5 rounded-3xl p-6 sm:p-8 flex flex-col justify-center gap-4 shadow-xl">
                 <p className="text-gray-400 font-semibold tracking-wider uppercase text-sm mb-1">Quick Actions</p>
                 <div className="grid grid-cols-2 gap-3">
                   <button onClick={() => setIsDepositOpen(true)} className="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-[#020817] p-3 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)]">
@@ -233,7 +234,7 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
               </div>
 
               {/* Box 4: Chart Area */}
-              <div className="lg:col-span-8 bg-gray-900/40 border border-white/5 rounded-3xl p-8 shadow-xl h-[350px] flex flex-col">
+              <div className="lg:col-span-8 bg-gray-900/40 border border-white/5 rounded-3xl p-6 sm:p-8 shadow-xl h-[300px] sm:h-[350px] flex flex-col">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-emerald-400 font-semibold tracking-wider uppercase text-sm">Growth Overview</p>
                   <Activity className="w-5 h-5 text-gray-500" />
@@ -258,7 +259,7 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
               </div>
 
               {/* Box 5: Transactions Sidebar */}
-              <div className="lg:col-span-4 bg-gray-900/40 border border-white/5 rounded-3xl p-8 flex flex-col h-[350px] shadow-xl">
+              <div className="lg:col-span-4 bg-gray-900/40 border border-white/5 rounded-3xl p-6 sm:p-8 flex flex-col h-[300px] sm:h-[350px] shadow-xl">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-bold text-white">Global Ledger</h3>
                   <button className="text-emerald-400 text-xs font-semibold hover:underline">Live Feed</button>
@@ -308,7 +309,7 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
           <motion.div 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="bg-[#0f172a] border border-white/10 p-8 rounded-3xl w-full max-w-md relative z-10 shadow-2xl"
+            className="bg-[#0f172a] border border-white/10 p-6 sm:p-8 rounded-3xl w-full max-w-md relative z-10 shadow-2xl"
           >
             <div className="flex justify-between items-start mb-6">
               <div>
@@ -378,7 +379,7 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
       {/* Deposit Modal */}
       {isDepositOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#0f172a] border border-white/10 p-8 rounded-[2rem] w-full max-w-md shadow-2xl">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#0f172a] border border-white/10 p-6 sm:p-8 rounded-[2rem] w-full max-w-md shadow-2xl">
             <h3 className="text-2xl font-bold text-white mb-2">Deposit Funds</h3>
             <p className="text-gray-400 mb-6">Add virtual funds to your central bank ledger.</p>
             <input 
@@ -401,8 +402,8 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
       {/* Transfer Modal */}
       {isTransferOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#0f172a] border border-white/10 p-8 rounded-[2rem] w-full max-w-md shadow-2xl">
-            <h3 className="text-2xl font-bold text-white mb-2">Send Online</h3>
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#0f172a] border border-white/10 p-6 sm:p-8 rounded-[2rem] w-full max-w-md shadow-2xl">
+            <h3 className="text-2xl font-bold text-white mb-2">Send Funds</h3>
             <p className="text-gray-400 mb-6">Instantly transfer funds to another Web Bank user.</p>
             <input 
               type="email" 
