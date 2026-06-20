@@ -46,23 +46,51 @@ export async function POST(req: Request) {
       const amount = Number(tx.amount);
       const isDebit = tx.type === 'debit';
       
-      // Update balance
+      // Parse encoded receiver ID from txId (format: uuid::receiverId)
+      const parts = String(tx.id).split('::');
+      const cleanTxId = parts[0];
+      const receiverId = parts.length > 1 ? parts[1] : null;
+
+      // Update sender's balance
       if (isDebit) {
         currentBalance -= amount;
       } else {
         currentBalance += amount;
       }
 
-      // Save to database
+      // Save sender's transaction
       await Transaction.create({
         walletId: wallet._id,
         amount: amount,
         type: tx.type,
         title: tx.title || (isDebit ? 'Offline Payment Sent' : 'Offline Payment Received'),
-        clientTxId: tx.id,
+        clientTxId: cleanTxId,
         status: 'SUCCESS',
         timestamp: new Date(tx.timestamp || Date.now()),
       });
+
+      // If this is a debit (sender syncing) and we have a receiver, CREDIT THE RECEIVER!
+      if (isDebit && receiverId && receiverId !== 'unknown') {
+        const receiverUser = await User.findOne({ clerkId: receiverId });
+        if (receiverUser) {
+          const receiverWallet = await Wallet.findOne({ userId: receiverUser._id });
+          if (receiverWallet) {
+            receiverWallet.syncedBalance += amount;
+            receiverWallet.updatedAt = new Date();
+            await receiverWallet.save();
+
+            await Transaction.create({
+              walletId: receiverWallet._id,
+              amount: amount,
+              type: 'credit',
+              title: `Received offline from ${user.name || 'User'}`,
+              clientTxId: `${cleanTxId}_rx`, // Unique ID for receiver side
+              status: 'SUCCESS',
+              timestamp: new Date(tx.timestamp || Date.now()),
+            });
+          }
+        }
+      }
 
       results.push({ transactionId: tx.id, status: 'SUCCESS' });
     }
