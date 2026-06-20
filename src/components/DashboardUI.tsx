@@ -109,7 +109,7 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
             <Show when="signed-in">
               <div className="flex items-center gap-4">
                 <a 
-                  href="https://github.com/Harshkumar2306/Harsh-Pay-App/releases/latest/download/app-release.apk"
+                  href={`https://github.com/Harshkumar2306/Harsh-Pay-App/releases/latest/download/app-release.apk?v=${Date.now()}`}
                   className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 px-4 py-2 rounded-full font-semibold transition-all shadow-[0_0_10px_rgba(16,185,129,0.1)] hover:shadow-[0_0_15px_rgba(16,185,129,0.2)] whitespace-nowrap text-sm flex items-center gap-2"
                 >
                   <Download className="w-4 h-4" />
