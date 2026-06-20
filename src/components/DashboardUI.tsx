@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Show, RedirectToSignIn, UserButton, SignInButton } from "@clerk/nextjs";
-import { Wallet, ArrowRightLeft, ShieldCheck, Activity, Globe, Zap, ArrowUpRight, ArrowDownRight, CreditCard, Send, Plus, Copy } from "lucide-react";
+import { Wallet, ArrowRightLeft, ShieldCheck, Activity, Globe, Zap, ArrowUpRight, ArrowDownRight, CreditCard, Send, Plus, Copy, Download } from "lucide-react";
 import { depositFunds, transferFundsOnline } from "@/lib/actions";
 import { motion } from "framer-motion";
 import { AreaChart, Area, Tooltip, ResponsiveContainer } from 'recharts';
@@ -107,7 +107,15 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
               </SignInButton>
             </Show>
             <Show when="signed-in">
-              <div className="p-0.5 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/10 hover:border-emerald-500/50 transition-colors shadow-lg">
+              <div className="flex items-center gap-4">
+                <a 
+                  href="https://github.com/Harshkumar2306/Harsh-Pay-App/releases/latest/download/app-release.apk"
+                  className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 px-4 py-2 rounded-full font-semibold transition-all shadow-[0_0_10px_rgba(16,185,129,0.1)] hover:shadow-[0_0_15px_rgba(16,185,129,0.2)] whitespace-nowrap text-sm flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Get Android App
+                </a>
+                <div className="p-0.5 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/10 hover:border-emerald-500/50 transition-colors shadow-lg">
                 <UserButton 
                   appearance={{
                     elements: {
@@ -120,6 +128,7 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
                   }}
                 />
               </div>
+            </div>
             </Show>
           </div>
         </div>
