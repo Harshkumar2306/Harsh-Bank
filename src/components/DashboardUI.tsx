@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Show, RedirectToSignIn, UserButton, SignInButton } from "@clerk/nextjs";
-import { Wallet, ArrowRightLeft, ShieldCheck, Activity, Globe, Zap, ArrowUpRight, ArrowDownRight, CreditCard, Send, Plus } from "lucide-react";
+import { Wallet, ArrowRightLeft, ShieldCheck, Activity, Globe, Zap, ArrowUpRight, ArrowDownRight, CreditCard, Send, Plus, Copy } from "lucide-react";
 import { depositFunds, transferFundsOnline } from "@/lib/actions";
 import { motion } from "framer-motion";
 import { AreaChart, Area, Tooltip, ResponsiveContainer } from 'recharts';
@@ -49,6 +49,8 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
   const [transferEmail, setTransferEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedTx, setSelectedTx] = useState<any>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [showSyncId, setShowSyncId] = useState(false);
 
   const handleDeposit = async () => {
     if (!depositAmount || isNaN(Number(depositAmount))) return;
@@ -142,11 +144,19 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
               <div>
                 <h2 className="text-4xl font-black text-white tracking-tight mb-2">Central Command</h2>
                 <p className="text-gray-400">Welcome back, <span className="text-white font-semibold">{name || 'Admin'}</span>. Your ledger is fully synchronized.</p>
-                {clerkId && <p className="text-xs text-gray-600 mt-2 font-mono">App Sync ID: {clerkId}</p>}
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20 backdrop-blur-md">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span className="text-sm font-bold tracking-wide uppercase">Node Active</span>
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => setIsProfileOpen(true)}
+                  className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-full border border-white/10 backdrop-blur-md transition-colors text-sm font-semibold flex items-center gap-2 shadow-lg"
+                >
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  Security Profile
+                </button>
+                <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20 backdrop-blur-md shadow-lg">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                  <span className="text-sm font-bold tracking-wide uppercase">Node Active</span>
+                </div>
               </div>
             </div>
 
@@ -281,6 +291,80 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
           </motion.div>
         </Show>
       </main>
+
+      {/* Security Profile Modal */}
+      {isProfileOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-[#020817]/80 backdrop-blur-sm" onClick={() => { setIsProfileOpen(false); setShowSyncId(false); }}></div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="bg-[#0f172a] border border-white/10 p-8 rounded-3xl w-full max-w-md relative z-10 shadow-2xl"
+          >
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h3 className="text-2xl font-bold text-white">Security Profile</h3>
+                <p className="text-gray-400 text-sm mt-1">Manage your sensitive identities</p>
+              </div>
+              <div className="p-3 bg-emerald-500/10 rounded-2xl">
+                <ShieldCheck className="w-8 h-8 text-emerald-500" />
+              </div>
+            </div>
+            
+            <div className="space-y-6">
+              <div className="bg-[#020817] p-4 rounded-2xl border border-white/5">
+                <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Account Holder</p>
+                <p className="text-white font-medium">{name || 'Admin'}</p>
+                <p className="text-gray-400 text-sm">{email || 'No email attached'}</p>
+              </div>
+
+              <div className="bg-[#020817] p-4 rounded-2xl border border-white/5">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="text-xs text-emerald-500 font-bold uppercase tracking-wider flex items-center gap-2">
+                    <Zap className="w-3 h-3" /> App Sync ID
+                  </p>
+                  <button 
+                    onClick={() => setShowSyncId(!showSyncId)}
+                    className="text-xs text-gray-400 hover:text-white transition-colors font-semibold px-2 py-1 bg-white/5 rounded-md"
+                  >
+                    {showSyncId ? 'Hide' : 'Reveal'}
+                  </button>
+                </div>
+                <div className="bg-[#0f172a] p-3 rounded-xl border border-white/5 flex items-center justify-between">
+                  <p className="text-gray-300 font-mono text-sm tracking-wider">
+                    {showSyncId ? clerkId : '••••••••••••••••••••••••'}
+                  </p>
+                  {showSyncId && (
+                    <button 
+                      onClick={() => {
+                        navigator.clipboard.writeText(clerkId || '');
+                        alert('App Sync ID copied to clipboard!');
+                      }}
+                      className="p-2 hover:bg-emerald-500/20 rounded-lg text-emerald-400 transition-colors"
+                      title="Copy to clipboard"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500 mt-3 leading-relaxed">
+                  Use this ID to securely bind your mobile app to this cloud account. <span className="text-red-400 font-semibold">Never share this with anyone.</span>
+                </p>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => {
+                setIsProfileOpen(false);
+                setShowSyncId(false);
+              }}
+              className="w-full mt-8 bg-white/5 hover:bg-white/10 text-white font-bold py-3.5 rounded-xl transition-colors"
+            >
+              Close Securely
+            </button>
+          </motion.div>
+        </div>
+      )}
 
       {/* Deposit Modal */}
       {isDepositOpen && (
