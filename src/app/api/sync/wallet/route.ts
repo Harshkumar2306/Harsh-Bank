@@ -14,14 +14,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing appSyncId' }, { status: 400 });
     }
 
-    const wallet = await Wallet.findOne({ appSyncId });
-    if (!wallet) {
+    // appSyncId is actually the user's clerkId
+    const user = await User.findOne({ clerkId: appSyncId });
+    if (!user) {
       return NextResponse.json({ error: 'Invalid App Sync ID' }, { status: 404 });
     }
 
-    const user = await User.findById(wallet.userId);
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    const wallet = await Wallet.findOne({ userId: user._id });
+    if (!wallet) {
+      return NextResponse.json({ error: 'Wallet not found' }, { status: 404 });
     }
 
     return NextResponse.json({
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
         name: user.name,
         email: user.email,
         syncedBalance: wallet.syncedBalance,
-        appSyncId: wallet.appSyncId
+        appSyncId: user.clerkId
       }
     });
 
