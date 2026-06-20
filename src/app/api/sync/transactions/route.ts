@@ -58,39 +58,16 @@ export async function POST(req: Request) {
         currentBalance += amount;
       }
 
-      // Save sender's transaction
+      // Save the transaction as reported by the client (debit or credit)
       await Transaction.create({
         walletId: wallet._id,
         amount: amount,
         type: tx.type,
         title: tx.title || (isDebit ? 'Offline Payment Sent' : 'Offline Payment Received'),
-        clientTxId: cleanTxId,
+        clientTxId: tx.id, // Full tx.id which guarantees uniqueness per client
         status: 'SUCCESS',
         timestamp: new Date(tx.timestamp || Date.now()),
       });
-
-      // If this is a debit (sender syncing) and we have a receiver, CREDIT THE RECEIVER!
-      if (isDebit && receiverId && receiverId !== 'unknown') {
-        const receiverUser = await User.findOne({ clerkId: receiverId });
-        if (receiverUser) {
-          const receiverWallet = await Wallet.findOne({ userId: receiverUser._id });
-          if (receiverWallet) {
-            receiverWallet.syncedBalance += amount;
-            receiverWallet.updatedAt = new Date();
-            await receiverWallet.save();
-
-            await Transaction.create({
-              walletId: receiverWallet._id,
-              amount: amount,
-              type: 'credit',
-              title: `Received offline from ${user.name || 'User'}`,
-              clientTxId: `${cleanTxId}_rx`, // Unique ID for receiver side
-              status: 'SUCCESS',
-              timestamp: new Date(tx.timestamp || Date.now()),
-            });
-          }
-        }
-      }
 
       results.push({ transactionId: tx.id, status: 'SUCCESS' });
     }
