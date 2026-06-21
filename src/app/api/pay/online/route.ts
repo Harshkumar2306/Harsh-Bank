@@ -11,9 +11,9 @@ export async function POST(req: Request) {
     await connectToDatabase();
 
     const body = await req.json();
-    const { senderClerkId, receiverClerkId, amount, note } = body;
+    const { senderClerkId, receiverClerkId, receiverEmail, amount, note } = body;
 
-    if (!senderClerkId || !receiverClerkId || !amount) {
+    if (!senderClerkId || (!receiverClerkId && !receiverEmail) || !amount) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -37,8 +37,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Insufficient balance' }, { status: 400 });
     }
 
-    // Find receiver
-    const receiver = await User.findOne({ clerkId: receiverClerkId });
+    // Find receiver by clerkId or email
+    let receiver;
+    if (receiverClerkId) {
+      receiver = await User.findOne({ clerkId: receiverClerkId });
+    } else if (receiverEmail) {
+      receiver = await User.findOne({ email: receiverEmail });
+    }
+    
     if (!receiver) return NextResponse.json({ error: 'Receiver not found' }, { status: 404 });
 
     const receiverWallet = await Wallet.findOne({ userId: receiver._id });
