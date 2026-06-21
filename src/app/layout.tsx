@@ -32,6 +32,8 @@ export default function RootLayout({
           colorPrimary: '#10b981',
           colorBackground: '#1e293b',
           colorText: '#ffffff',
+          colorTextSecondary: '#cbd5e1',
+          colorTextOnPrimaryBackground: '#ffffff',
           colorDanger: '#ef4444',
           colorSuccess: '#22c55e',
         },
@@ -51,7 +53,18 @@ export default function RootLayout({
           footerActionText: "!text-slate-300",
           footerActionLink: "text-emerald-400 hover:text-emerald-300 font-bold",
           identityPreviewText: "!text-white font-bold",
-          formFieldAction: "text-emerald-500 hover:text-emerald-400"
+          formFieldAction: "text-emerald-500 hover:text-emerald-400",
+          profileSectionTitleText: "!text-white font-bold",
+          profilePageTitle: "!text-white font-bold",
+          profilePageSubtitle: "!text-slate-300",
+          userPreviewMainIdentifier: "!text-white font-bold",
+          userPreviewSecondaryIdentifier: "!text-slate-300",
+          navbarButton: "!text-slate-200 hover:!text-white",
+          breadcrumbsItem: "!text-white font-bold",
+          badge: "!text-white !bg-slate-700",
+          activeDeviceIcon: "!text-emerald-400",
+          profileSectionContent: "!text-white",
+          avatarImageActions: "!text-slate-300"
         }
       }) as any}
     >
