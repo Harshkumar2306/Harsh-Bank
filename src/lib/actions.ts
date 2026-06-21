@@ -24,10 +24,20 @@ export async function syncUserAndGetWallet() {
     // If clerkId not found, check if email exists (e.g. user deleted account and signed up again)
     user = await User.findOne({ email });
     if (user) {
-      // Link the new clerkId to the existing user
-      user.clerkId = clerkId;
-      user.name = name; // Update name just in case
-      await user.save();
+      // User wants a fresh slate! Wipe their old bank data before creating the new one.
+      const oldWallet = await Wallet.findOne({ userId: user._id });
+      if (oldWallet) {
+        await Transaction.deleteMany({ walletId: oldWallet._id });
+        await Wallet.deleteOne({ _id: oldWallet._id });
+      }
+      await User.deleteOne({ _id: user._id });
+      
+      // Create fresh user
+      user = await User.create({
+        clerkId,
+        name,
+        email,
+      });
     } else {
       user = await User.create({
         clerkId,
