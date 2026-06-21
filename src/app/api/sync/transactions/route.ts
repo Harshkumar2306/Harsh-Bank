@@ -35,41 +35,100 @@ export async function POST(req: Request) {
 
     // Process transactions sequentially to ensure balance integrity
     for (const tx of transactions) {
-      // Check if transaction already exists (idempotency)
-      const existingTx = await Transaction.findOne({ clientTxId: tx.id });
-      if (existingTx) {
-        results.push({ transactionId: tx.id, status: 'ALREADY_PROCESSED' });
-        continue;
-      }
-
-      // Determine amount to add/subtract
       const amount = Number(tx.amount);
       const isDebit = tx.type === 'debit';
       
       // Parse encoded receiver ID from txId (format: uuid::receiverId)
       const parts = String(tx.id).split('::');
       const cleanTxId = parts[0];
-      const receiverId = parts.length > 1 ? parts[1] : null;
+      const intendedReceiverId = parts.length > 1 ? parts[1] : null;
 
-      // Update sender's balance
-      if (isDebit) {
-        currentBalance -= amount;
-      } else {
-        currentBalance += amount;
+      // Ensure unique clientTxId for sender and receiver
+      const serverTxId = isDebit ? tx.id : `${tx.id}_rx`;
+
+      // Check if transaction already exists (idempotency)
+      const existingTx = await Transaction.findOne({ clientTxId: serverTxId });
+      if (existingTx) {
+        results.push({ transactionId: tx.id, status: 'ALREADY_PROCESSED' });
+        continue;
       }
 
-      // Save the transaction as reported by the client (debit or credit)
-      await Transaction.create({
-        walletId: wallet._id,
-        amount: amount,
-        type: tx.type,
-        title: tx.title || (isDebit ? 'Offline Payment Sent' : 'Offline Payment Received'),
-        clientTxId: tx.id, // Full tx.id which guarantees uniqueness per client
-        status: 'SUCCESS',
-        timestamp: new Date(tx.timestamp || Date.now()),
-      });
+      if (isDebit) {
+        // SENDER LOGIC: Always deduct sender unconditionally
+        currentBalance -= amount;
 
-      results.push({ transactionId: tx.id, status: 'SUCCESS' });
+        await Transaction.create({
+          walletId: wallet._id,
+          amount: amount,
+          type: 'debit',
+          title: tx.title || 'Offline Payment Sent',
+          clientTxId: serverTxId,
+          status: 'SUCCESS',
+          timestamp: new Date(tx.timestamp || Date.now()),
+        });
+
+        results.push({ transactionId: tx.id, status: 'SUCCESS' });
+
+        // Match-and-Settle: Check if receiver ALREADY synced their credit, which would be PENDING
+        if (intendedReceiverId) {
+          const receiverUser = await User.findOne({ clerkId: intendedReceiverId });
+          if (receiverUser) {
+            const receiverWallet = await Wallet.findOne({ userId: receiverUser._id });
+            if (receiverWallet) {
+               const pendingCredit = await Transaction.findOne({
+                 clientTxId: `${tx.id}_rx`,
+                 status: 'PENDING'
+               });
+               // Only settle if amounts match cryptographically!
+               if (pendingCredit && pendingCredit.amount === amount) {
+                 pendingCredit.status = 'SUCCESS';
+                 await pendingCredit.save();
+                 receiverWallet.syncedBalance += amount;
+                 receiverWallet.updatedAt = new Date();
+                 await receiverWallet.save();
+               } else if (pendingCredit) {
+                 pendingCredit.status = 'FAILED';
+                 pendingCredit.title = 'Amount Spoofing Detected';
+                 await pendingCredit.save();
+               }
+            }
+          }
+        }
+      } else {
+        // RECEIVER LOGIC: Zero-Trust. Check if matching debit exists.
+        const matchingDebit = await Transaction.findOne({
+           clientTxId: tx.id, // Sender uses the exact tx.id
+           type: 'debit'
+        });
+
+        if (matchingDebit && matchingDebit.amount === amount) {
+           // SENDER HAS ALREADY SYNCED! Settle it instantly!
+           currentBalance += amount;
+           await Transaction.create({
+             walletId: wallet._id,
+             amount: amount,
+             type: 'credit',
+             title: tx.title || 'Offline Payment Received',
+             clientTxId: serverTxId,
+             status: 'SUCCESS',
+             timestamp: new Date(tx.timestamp || Date.now()),
+           });
+           results.push({ transactionId: tx.id, status: 'SUCCESS' });
+        } else {
+           // SENDER HAS NOT SYNCED YET, OR AMOUNT MISMATCH! Put in PENDING.
+           await Transaction.create({
+             walletId: wallet._id,
+             amount: amount,
+             type: 'credit',
+             title: tx.title || 'Offline Payment Received',
+             clientTxId: serverTxId,
+             status: 'PENDING', // Will be settled when sender syncs
+             timestamp: new Date(tx.timestamp || Date.now()),
+           });
+           // Return WAITING so the app knows it hasn't settled yet
+           results.push({ transactionId: tx.id, status: 'WAITING_FOR_SENDER' });
+        }
+      }
     }
 
     // Save final wallet balance
