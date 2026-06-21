@@ -26,15 +26,11 @@ body {
 }
 
 /* Force Clerk Profile Modal Text to be white */
-.cl-rootBox, .cl-userButtonPopoverCard {
+.cl-rootBox {
   color: white !important;
 }
-.cl-rootBox h1, .cl-rootBox h2, .cl-rootBox h3, .cl-rootBox h4, .cl-rootBox h5, .cl-rootBox h6, .cl-rootBox p, .cl-rootBox span, .cl-rootBox div,
-.cl-userButtonPopoverCard h1, .cl-userButtonPopoverCard h2, .cl-userButtonPopoverCard h3, .cl-userButtonPopoverCard h4, .cl-userButtonPopoverCard h5, .cl-userButtonPopoverCard h6, .cl-userButtonPopoverCard p, .cl-userButtonPopoverCard span, .cl-userButtonPopoverCard div {
+.cl-rootBox h1, .cl-rootBox h2, .cl-rootBox h3, .cl-rootBox h4, .cl-rootBox h5, .cl-rootBox h6, .cl-rootBox p, .cl-rootBox span, .cl-rootBox div {
   color: inherit;
-}
-.cl-userButtonPopoverActionButtonText, .cl-userButtonPopoverActionButtonIcon {
-  color: white !important;
 }
 .cl-profileSectionSubtitle, .cl-userPreviewSecondaryIdentifier, .cl-breadcrumbsItem {
   color: #cbd5e1 !important; /* slate-300 */
