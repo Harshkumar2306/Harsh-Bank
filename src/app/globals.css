@@ -24,3 +24,20 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Force Clerk Profile Modal Text to be white */
+.cl-rootBox {
+  color: white !important;
+}
+.cl-rootBox h1, .cl-rootBox h2, .cl-rootBox h3, .cl-rootBox h4, .cl-rootBox h5, .cl-rootBox h6, .cl-rootBox p, .cl-rootBox span, .cl-rootBox div {
+  color: inherit;
+}
+.cl-profileSectionSubtitle, .cl-userPreviewSecondaryIdentifier, .cl-breadcrumbsItem {
+  color: #cbd5e1 !important; /* slate-300 */
+}
+.cl-socialButtonsBlockButtonText, .cl-socialButtonsBlockButtonText * {
+  color: #0f172a !important;
+}
+.cl-profileSectionPrimaryButton {
+  color: #10b981 !important;
+}
