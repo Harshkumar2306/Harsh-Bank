@@ -21,11 +21,20 @@ export async function syncUserAndGetWallet() {
   // 1. Find or create the User
   let user = await User.findOne({ clerkId });
   if (!user) {
-    user = await User.create({
-      clerkId,
-      name,
-      email,
-    });
+    // If clerkId not found, check if email exists (e.g. user deleted account and signed up again)
+    user = await User.findOne({ email });
+    if (user) {
+      // Link the new clerkId to the existing user
+      user.clerkId = clerkId;
+      user.name = name; // Update name just in case
+      await user.save();
+    } else {
+      user = await User.create({
+        clerkId,
+        name,
+        email,
+      });
+    }
   }
 
   // 2. Find or create the Wallet
