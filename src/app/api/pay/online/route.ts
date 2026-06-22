@@ -62,15 +62,16 @@ export async function POST(req: Request) {
     receiverWallet.syncedBalance += txAmount;
     receiverWallet.updatedAt = timestamp;
     await receiverWallet.save();
-
-    const txTitle = note || `Sent to ${receiver.name}`;
+    
+    const senderTitle = `Sent to ${receiver.name}${note ? `::NOTE::${note}` : '::NOTE::'}`;
+    const receiverTitle = `Received from ${sender.name}${note ? `::NOTE::${note}` : '::NOTE::'}`;
 
     // Record sender's debit transaction
     await Transaction.create({
       walletId: senderWallet._id,
       amount: txAmount,
       type: 'debit',
-      title: txTitle,
+      title: senderTitle,
       clientTxId: clientTxId,
       status: 'SUCCESS',
       timestamp,
@@ -81,7 +82,7 @@ export async function POST(req: Request) {
       walletId: receiverWallet._id,
       amount: txAmount,
       type: 'credit',
-      title: `Received from ${sender.name}`,
+      title: receiverTitle,
       clientTxId: `${clientTxId}_rx`,
       status: 'SUCCESS',
       timestamp,
@@ -93,7 +94,7 @@ export async function POST(req: Request) {
       newBalance: senderWallet.syncedBalance,
       receiverName: receiver.name,
       transactionId: clientTxId,
-      title: txTitle,
+      title: senderTitle,
     });
 
   } catch (error: any) {
