@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Show, RedirectToSignIn, UserButton, SignInButton } from "@clerk/nextjs";
 import { Wallet, ArrowRightLeft, ShieldCheck, Activity, Globe, Zap, ArrowUpRight, ArrowDownRight, CreditCard, Send, Plus, Copy, Download } from "lucide-react";
 import { depositFunds, transferFundsOnline } from "@/lib/actions";
@@ -51,6 +52,15 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
   const [selectedTx, setSelectedTx] = useState<any>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [showSyncId, setShowSyncId] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Auto-refresh the server component every 5 seconds to get live data
+    const interval = setInterval(() => {
+      router.refresh();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [router]);
 
   const handleDeposit = async () => {
     if (!depositAmount || isNaN(Number(depositAmount))) return;
