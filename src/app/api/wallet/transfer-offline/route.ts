@@ -31,17 +31,17 @@ export async function POST(req: Request) {
     // Direction: "to_offline" moves funds from syncedBalance -> lockedOfflineBalance
     // Direction: "to_online" moves funds from lockedOfflineBalance -> syncedBalance
     if (direction === 'to_offline') {
-      if (wallet.syncedBalance < amount) {
+      if ((wallet.syncedBalance || 0) < amount) {
         return NextResponse.json({ error: 'Insufficient main cloud balance' }, { status: 400 });
       }
-      wallet.syncedBalance -= amount;
-      wallet.lockedOfflineBalance += amount;
+      wallet.syncedBalance = (wallet.syncedBalance || 0) - amount;
+      wallet.lockedOfflineBalance = (wallet.lockedOfflineBalance || 0) + amount;
     } else if (direction === 'to_online') {
-      if (wallet.lockedOfflineBalance < amount) {
+      if ((wallet.lockedOfflineBalance || 0) < amount) {
         return NextResponse.json({ error: 'Insufficient offline vault balance' }, { status: 400 });
       }
-      wallet.lockedOfflineBalance -= amount;
-      wallet.syncedBalance += amount;
+      wallet.lockedOfflineBalance = (wallet.lockedOfflineBalance || 0) - amount;
+      wallet.syncedBalance = (wallet.syncedBalance || 0) + amount;
     } else {
       return NextResponse.json({ error: 'Invalid direction' }, { status: 400 });
     }
