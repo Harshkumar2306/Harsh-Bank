@@ -32,6 +32,7 @@ export async function POST(req: Request) {
 
     const results = [];
     let currentBalance = wallet.syncedBalance;
+    let currentOfflineBalance = wallet.lockedOfflineBalance || 0.0;
 
     // Process transactions sequentially to ensure balance integrity
     for (const tx of transactions) {
@@ -82,7 +83,7 @@ export async function POST(req: Request) {
 
           if (amountMatch && senderMatch && receiverMatch) {
             // VERIFICATION PASSED! SETTLE ESCROW!
-            currentBalance -= amount; // Deduct from sender
+            currentOfflineBalance -= amount; // Deduct from sender's offline vault
             await Transaction.create({
               walletId: wallet._id,
               amount: amount,
@@ -182,7 +183,7 @@ export async function POST(req: Request) {
              if (senderUser) {
                const senderWallet = await Wallet.findOne({ userId: senderUser._id });
                if (senderWallet) {
-                 senderWallet.syncedBalance -= amount;
+                 senderWallet.lockedOfflineBalance -= amount;
                  senderWallet.updatedAt = new Date();
                  await senderWallet.save();
                }
@@ -214,6 +215,7 @@ export async function POST(req: Request) {
 
     // Save final wallet balance
     wallet.syncedBalance = currentBalance;
+    wallet.lockedOfflineBalance = currentOfflineBalance;
     wallet.updatedAt = new Date();
     await wallet.save();
 

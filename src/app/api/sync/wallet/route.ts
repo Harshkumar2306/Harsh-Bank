@@ -48,6 +48,7 @@ export async function POST(req: Request) {
         name: user.name,
         email: user.email,
         syncedBalance: wallet.syncedBalance,
+        lockedOfflineBalance: wallet.lockedOfflineBalance,
         appSyncId: user.clerkId,
         transactions: txList,
       }
