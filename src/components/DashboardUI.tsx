@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Show, RedirectToSignIn, UserButton, SignInButton } from "@clerk/nextjs";
-import { Wallet, ArrowRightLeft, ShieldCheck, Activity, Globe, Zap, ArrowUpRight, ArrowDownRight, CreditCard, Send, Plus, Copy, Download } from "lucide-react";
+import { Wallet, ArrowRightLeft, ShieldCheck, Activity, Globe, Zap, ArrowUpRight, ArrowDownRight, CreditCard, Send, Plus, Copy, Download, Lock } from "lucide-react";
 import { depositFunds, transferFundsOnline } from "@/lib/actions";
 import { motion } from "framer-motion";
 import { AreaChart, Area, Tooltip, ResponsiveContainer } from 'recharts';
@@ -187,11 +187,26 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
                 <div className="absolute -top-32 -right-32 w-64 h-64 bg-emerald-500/10 blur-[80px] rounded-full pointer-events-none"></div>
                 <div className="relative z-10">
                   <p className="text-emerald-400 font-semibold tracking-wider uppercase text-xs sm:text-sm mb-2 sm:mb-3 flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4" /> Vault Balance
+                    <Globe className="w-4 h-4" /> Main Cloud Balance
                   </p>
                   <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tighter">
                     ₹ {(walletData?.syncedBalance || 0).toLocaleString()}
                   </h3>
+                  
+                  {/* Offline Vault Section */}
+                  <div className="mt-6 pt-5 border-t border-white/10 flex items-center justify-between">
+                    <div>
+                      <p className="text-orange-400 font-semibold tracking-wider uppercase text-[10px] sm:text-xs mb-1 flex items-center gap-1.5">
+                        <Lock className="w-3.5 h-3.5" /> Offline Vault
+                      </p>
+                      <h4 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                        ₹ {(walletData?.lockedOfflineBalance || 0).toLocaleString()}
+                      </h4>
+                    </div>
+                    <div className="bg-orange-500/10 border border-orange-500/20 px-3 py-1.5 rounded-full">
+                      <span className="text-orange-400 text-xs font-bold uppercase tracking-wider">Secured</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
