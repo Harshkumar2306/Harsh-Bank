@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Show, RedirectToSignIn, UserButton, SignInButton } from "@clerk/nextjs";
-import { Wallet, ArrowRightLeft, ShieldCheck, Activity, Globe, Zap, ArrowUpRight, ArrowDownRight, CreditCard, Send, Plus, Copy, Download, Lock } from "lucide-react";
+import { Wallet, ArrowRightLeft, ShieldCheck, Activity, Globe, Zap, ArrowUpRight, ArrowDownRight, CreditCard, Send, Plus, Copy, Download, WifiOff } from "lucide-react";
 import { depositFunds, transferFundsOnline } from "@/lib/actions";
 import { motion } from "framer-motion";
 import { AreaChart, Area, Tooltip, ResponsiveContainer } from 'recharts';
@@ -197,7 +197,7 @@ export default function DashboardUI({ walletData, transactions, clerkId, name, e
                   <div className="mt-6 pt-5 border-t border-white/10 flex items-center justify-between">
                     <div>
                       <p className="text-orange-400 font-semibold tracking-wider uppercase text-[10px] sm:text-xs mb-1 flex items-center gap-1.5">
-                        <Lock className="w-3.5 h-3.5" /> Offline Vault
+                        <WifiOff className="w-3.5 h-3.5" /> Offline Vault
                       </p>
                       <h4 className="text-xl sm:text-2xl font-black text-white tracking-tight">
                         ₹ {(walletData?.lockedOfflineBalance || 0).toLocaleString()}
