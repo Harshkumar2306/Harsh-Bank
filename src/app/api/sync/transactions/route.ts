@@ -54,7 +54,11 @@ export async function POST(req: Request) {
       // Check if transaction already exists (idempotency)
       const existingTx = await Transaction.findOne({ clientTxId: serverTxId });
       if (existingTx) {
-        results.push({ transactionId: tx.id, status: 'ALREADY_PROCESSED' });
+        if (existingTx.status === 'PENDING') {
+          results.push({ transactionId: tx.id, status: isDebit ? 'WAITING_FOR_RECEIVER' : 'WAITING_FOR_SENDER' });
+        } else {
+          results.push({ transactionId: tx.id, status: 'ALREADY_PROCESSED' });
+        }
         continue;
       }
 

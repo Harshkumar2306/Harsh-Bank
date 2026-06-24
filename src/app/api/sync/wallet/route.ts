@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       amount: tx.amount,
       title: tx.title,
       timestamp: new Date(tx.timestamp).getTime(),
-      isSynced: true,
+      isSynced: tx.status !== 'PENDING',
     }));
 
     return NextResponse.json({
